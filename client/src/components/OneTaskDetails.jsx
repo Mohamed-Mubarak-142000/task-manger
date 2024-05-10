@@ -1,28 +1,53 @@
 import React from "react";
-import { LuBug, LuThumbsUp, LuUser } from "react-icons/lu";
-import { MdAddTask, MdDoneOutline, MdOutlineMessage } from "react-icons/md";
-import { TbProgress } from "react-icons/tb";
+import {
+  MdAddTask,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdKeyboardDoubleArrowUp,
+} from "react-icons/md";
 import { getFormatDate } from "../utils/getTimeDetails";
 import { getInitial } from "../utils/getInitialUsername";
-import Assets1 from "../assets/image1.jpg";
-import Assets2 from "../assets/image2.jpg";
 const OneTaskDetails = ({ taskDetails }) => {
-  const STYLEDCOLOR = {
-    stageStyle: {
-      completed: "text-green-700",
-      todo: "text-blue-700",
-      "in progress": "text-red-700",
-    },
-    priorityStyle: {
-      high: "bg-green-300",
-      medium: "bg-blue-300",
-      "in progress": "bg-red-300",
-    },
-    stageIcons: {
-      completed: "bg-green-700",
-      todo: "bg-blue-700",
-      "in progress": "bg-red-700",
-    },
+  // const STYLEDCOLOR = {
+  //   stageStyle: {
+  //     completed: "text-green-700",
+  //     todo: "text-blue-700",
+  //     "in progress": "text-red-700",
+  //   },
+  //   priorityStyle: {
+  //     high: "bg-green-300",
+  //     medium: "bg-blue-300",
+  //     "in progress": "bg-red-300",
+  //   },
+  //   stageIcons: {
+  //     completed: "bg-blue-600",
+  //     "in progress": "bg-green-500",
+  //     todo: "bg-yellow-500",
+  //   },
+  // };
+
+  const TaskType = {
+    completed: "bg-blue-600",
+    "in progress": "bg-green-500",
+    todo: "bg-yellow-500",
+  };
+
+  const TaskTypeProirty = {
+    high: "text-blue-600",
+    medium: "text-green-500",
+    "in progress": "text-yellow-500",
+  };
+
+  const bgTaskTypeProirty = {
+    high: "bg-blue-300",
+    medium: "bg-green-300",
+    "in progress": "bg-yellow-300",
+  };
+
+  const iconsTasks = {
+    high: <MdKeyboardDoubleArrowUp />,
+    medium: <MdKeyboardArrowUp />,
+    "in progress": <MdKeyboardArrowDown />,
   };
 
   return (
@@ -31,19 +56,17 @@ const OneTaskDetails = ({ taskDetails }) => {
         <div className="flex items-center gap-5 my-2">
           <div
             className={`w-[160px] text-center capitalize rounded-xl py-1 flex items-center justify-center gap-1
-        ${STYLEDCOLOR.priorityStyle[taskDetails?.PRIORITY]} ${
-              STYLEDCOLOR.stageStyle[taskDetails?.stage]
+        ${bgTaskTypeProirty[taskDetails?.priority]} ${
+              TaskType[taskDetails?.stage]
             } `}
           >
-            <span>{taskDetails?.PRIORITY}</span>
+            <span>{taskDetails?.priority}</span>
             <span className="capitalize">priority</span>
           </div>
 
           <div className="capitalize flex items-center justify-center gap-1">
             <div
-              className={`w-4 h-4 rounded-full ${
-                STYLEDCOLOR.stageIcons[taskDetails?.stage]
-              }`}
+              className={`w-4 h-4 rounded-full ${TaskType[taskDetails?.stage]}`}
             />
 
             <span>{taskDetails?.stage}</span>
@@ -82,7 +105,7 @@ const OneTaskDetails = ({ taskDetails }) => {
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-8 h-8 text-sm rounded-full bg-blue-700 text-white flex items-center justify-center ${
-                        STYLEDCOLOR.stageIcons[taskDetails.stage]
+                        TaskType[taskDetails.stage]
                       }`}
                     >
                       {getInitial(user?.name)}
@@ -107,7 +130,7 @@ const OneTaskDetails = ({ taskDetails }) => {
           <h3 className="capitalize text-gray-600">sub tasks</h3>
           <div className="border-t-2 " />
 
-          {taskDetails?.subTasks.length > 0 ? (
+          {taskDetails?.subTasks?.length > 0 ? (
             taskDetails?.subTasks?.map((task, index) => {
               return (
                 <div key={index}>
@@ -128,7 +151,7 @@ const OneTaskDetails = ({ taskDetails }) => {
                         </span>
                       </div>
 
-                      <span className="text-sm">{task.title}</span>
+                      <span className="text-sm">{task?.title}</span>
                     </div>
                   </div>
 
@@ -150,20 +173,20 @@ const OneTaskDetails = ({ taskDetails }) => {
         </h3>
 
         <div className="flex items-center gap-1">
-          <div className="w-[100%] md:w-[50%] h-[300px] overflow-hidden rounded-lg">
-            <img
-              src={Assets1}
-              alt="image-ass1"
-              className="w-full h-full rounded-lg cursor-pointer transition-all duration-700 hover:scale-125 hover:z-50"
-            />
-          </div>
-          <div className="w-[100%] md:w-[50%] h-[300px]  overflow-hidden rounded-lg">
-            <img
-              src={Assets2}
-              alt="image-ass2"
-              className="w-full h-full rounded-lg cursor-pointer transition-all duration-700 hover:scale-125 hover:z-50"
-            />
-          </div>
+          {taskDetails?.assets?.map((asset, index) => {
+            return (
+              <div
+                key={index}
+                className="w-[100%] md:w-[50%] h-[300px] overflow-hidden rounded-lg"
+              >
+                <img
+                  src={asset}
+                  alt="image-ass1"
+                  className="w-full h-full rounded-lg cursor-pointer transition-all duration-700 hover:scale-125 hover:z-50"
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
     </section>

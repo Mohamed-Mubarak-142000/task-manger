@@ -19,58 +19,9 @@ const Notification = () => {
     ),
   };
 
-  const data = [
-    {
-      id: "1",
-      team: ["ahmed mohamed ", "ibrahim mohamed", "ali ashraf"],
-      text: "lorem lor emloreml oremlore mlore mloremlo remlor em lore mlorem lorem lorem lo rem",
-      task: null,
-      notiType: "alert",
-      isRead: [],
-      createdAt: "2023-12-15",
-      updatedAt: "2024-01-12",
-    },
-    {
-      id: "2",
-      team: ["ibrahim mohamed", "ali ashraf"],
-      text: "lorem lor emloreml oremlore mlore mloremlo remlor em lore mlorem lorem lorem lo rem",
-      task: {
-        _id: "222222113231s11212d1s2a",
-        title: "test task",
-      },
-      notiType: "message",
-      isRead: [],
-      createdAt: "2023-12-15",
-      updatedAt: "2024-01-12",
-    },
-    {
-      id: "3",
-      team: ["ibrahim mohamed", "ali ashraf"],
-      text: "lorem lor emloreml oremlore mlore mloremlo remlor em lore mlorem lorem lorem lo rem",
-      task: null,
-      notiType: "message",
-      isRead: [],
-      createdAt: "2023-12-15",
-      updatedAt: "2024-01-12",
-    },
-    {
-      id: "4",
-      team: ["ahmed mohamed ", "ibrahim mohamed"],
-      text: "lorem lor emloreml oremlore mlore mloremlo remlor em lore mlorem lorem lorem lo rem",
-      task: {
-        _id: "222222113231s11212d1s2a",
-        title: "test task",
-      },
-      notiType: "alert",
-      isRead: [],
-      createdAt: "2023-12-15",
-      updatedAt: "2024-01-12",
-    },
-  ];
-
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
-  const { getNotification, refetch } = useGetNotificationQuery();
+  const { data: getNotification, refetch } = useGetNotificationQuery();
   const [markNotificationIsRead] = useMarkNotificationIsReadMutation();
 
   const readHandler = async (type, id) => {
@@ -102,9 +53,9 @@ const Notification = () => {
               <div className=" relative w-10 h-10 flex items-center justify-center">
                 <IoMdNotifications size={25} />
 
-                {data.length > 0 && (
+                {getNotification?.length > 0 && (
                   <span className="h-5 w-5 bg-red-700 text-white absolute top-0 right-[-5px] rounded-full flex items-center justify-center text-sm ">
-                    {data?.length}
+                    {getNotification?.length}
                   </span>
                 )}
               </div>
@@ -121,19 +72,24 @@ const Notification = () => {
             >
               <Popover.Panel className="absolute right-0 mt-4 z-50 w-[300px]  md:w-[500px] rounded-lg bg-white shadow-xl focus:outline-none">
                 <div className="h-[200px] overflow-y-auto">
-                  {data.map((item) => (
+                  {!getNotification?.length && (
+                    <span className="text-gray-400 text-xl text-center flex items-center justify-center h-full  capitalize">
+                      not any Notification
+                    </span>
+                  )}
+                  {getNotification?.map((item) => (
                     <div
-                      className="flex gap-2 items-center my-2 hover:bg-blue-100 cursor-pointer transition-all duration-150 "
-                      key={item.id}
+                      className="flex gap-2 items-center my-2 p-2 hover:bg-blue-100 cursor-pointer transition-all duration-150 "
+                      key={item._id}
                       onClick={() => viewHandler(item)}
                     >
                       <div className="w-10 h-16 flex justify-center items-center ">
-                        {iconsNotification[item.notiType]}
+                        {iconsNotification[item.notificationType]}
                       </div>
 
                       <div className="flex flex-col gap-2 p-1">
                         <div className="text-sm capitalize text-blue-500 flex items-center gap-2">
-                          <span>{item.notiType}</span>
+                          <span>{item.notificationType}</span>
                           <span className="text-xs text-gray-800">
                             ({moment(item.createdAt).fromNow()})
                           </span>
@@ -153,7 +109,7 @@ const Notification = () => {
                         onClick={
                           action?.onClick ? () => item.onClick() : () => close()
                         }
-                        className="flex items-center justify-center gap-2 p-3 capitalize font-bold text-blue-700 bg-gray-100 hover:bg-gray-200 transition-all duration-100"
+                        className="flex items-center rounded-b-md justify-center gap-2 p-3 capitalize font-bold text-blue-700 bg-gray-100 hover:bg-gray-200 transition-all duration-100"
                       >
                         {action.name}
                       </Link>
@@ -166,7 +122,12 @@ const Notification = () => {
         )}
       </Popover>
 
-      <ViewNotification open={open} setOpen={setOpen} el={selected} />
+      <ViewNotification
+        open={open}
+        setOpen={setOpen}
+        el={selected}
+        refetch={refetch}
+      />
     </>
   );
 };

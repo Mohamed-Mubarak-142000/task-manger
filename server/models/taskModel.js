@@ -32,7 +32,7 @@ const taskSchema = new Schema(
     },
     subTasks: [
       {
-        title: String,
+        subtitle: String,
         date: Date,
         tag: String,
       },

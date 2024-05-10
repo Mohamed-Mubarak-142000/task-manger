@@ -14,8 +14,6 @@ const TableRow = ({ task }) => {
     todo: "bg-yellow-500",
   };
 
-  console.log("first555", task);
-
   const iconsTasks = {
     high: <MdKeyboardDoubleArrowUp />,
     medium: <MdKeyboardArrowUp />,

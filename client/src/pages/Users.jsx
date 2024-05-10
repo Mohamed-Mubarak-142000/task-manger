@@ -66,11 +66,11 @@ const Users = () => {
         <table className="w-full">
           <HeaderTable />
           <tbody>
-            {data?.map((user) => {
+            {data?.map((user, index) => {
               return (
                 <TableUserRow
                   user={user}
-                  key={user.id}
+                  key={index}
                   setSelected={setSelected}
                   deleteHandler={deleteHandler}
                   refetch={refetch}

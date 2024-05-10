@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { summary } from "../assets/data";
 import { FaRegNewspaper } from "react-icons/fa";
 import Card from "../components/Card";
@@ -10,9 +10,16 @@ import TaskTable from "../components/TaskTable";
 import TableUsers from "../components/TableUsers";
 import { useGetDashoardStatusQuery } from "../redux/apis/taskApiSlice";
 import Loading from "../components/Loading";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const { data, isLoading } = useGetDashoardStatusQuery();
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    !user && navigate("/login");
+  }, [user]);
 
   if (isLoading) {
     return (

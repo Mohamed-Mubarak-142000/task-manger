@@ -8,13 +8,13 @@ import {
 } from "react-icons/md";
 import TaskDialog from "./TaskDialog";
 import { getFormatDate } from "../utils/getTimeDetails";
-import { TfiAlarmClock, TfiPulse } from "react-icons/tfi";
-import { CgAttachment, CgList } from "react-icons/cg";
+import { TfiAlarmClock } from "react-icons/tfi";
+import { CgAttachment } from "react-icons/cg";
 import UserPopover from "./UserPopover";
 import { useSelector } from "react-redux";
 import SubTaskModel from "./SubTaskModel";
 
-const TaskCard = ({ item }) => {
+const TaskCard = ({ item, refetch }) => {
   const { user } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
@@ -37,7 +37,7 @@ const TaskCard = ({ item }) => {
   };
 
   return (
-    <div className="bg-white rounded shadow-lg p-1 h-[260px] hover:shadow-xl transition-all duration-150 cursor-pointer">
+    <div className="bg-white rounded shadow-lg p-1 min-h-[240px] hover:shadow-xl transition-all duration-150 cursor-pointer">
       <div
         className={`flex gap-1 items-center justify-between capitalize text-xs`}
       >
@@ -52,7 +52,7 @@ const TaskCard = ({ item }) => {
           <span>priority</span>
         </div>
         {/**task dialog */}
-        <TaskDialog item={item} />
+        <TaskDialog item={item} refetch={refetch} />
       </div>
       {/***title task */}
       <div className="flex items-center gap-1 capitalize mt-2">
@@ -97,29 +97,32 @@ const TaskCard = ({ item }) => {
       <div className="border-t mt-1" />
       {/**sub Tasks**/}
 
-      <div className="">
+      <div className=" flex flex-col justify-between">
         <h6 className="capitalize text-gray-500 text-sm">sub task</h6>
-        {item?.subTasks?.length ? (
-          <>
-            <span className="text-sm px-2 line-clamp-1">
-              {item?.subTasks[0]?.title}
-            </span>
 
-            <div className="flex items-center justify-around mt-1">
-              <span className="text-gray-700 text-xs ">
-                {getFormatDate(new Date(item?.subTasks[0]?.date))}
+        <div className="h-[70px] flex">
+          {item?.subTasks?.length ? (
+            <div className=" border w-full">
+              <span className="text-sm p-2 font-bold text-gray-900 line-clamp-1">
+                {item?.subTasks[0]?.subtitle}
               </span>
 
-              <span className="text-sm text-gray-700 bg-blue-200 px-2 rounded flex items-center justify-center">
-                {item?.subTasks[0]?.tag}
-              </span>
+              <div className="flex items-center justify-around mt-1">
+                <span className="text-gray-700 text-xs ">
+                  {getFormatDate(new Date(item?.subTasks[0]?.date))}
+                </span>
+
+                <span className="text-sm text-gray-700 bg-blue-200 px-2 rounded flex items-center justify-center">
+                  {item?.subTasks[0]?.tag}
+                </span>
+              </div>
             </div>
-          </>
-        ) : (
-          <span className="text-gray-500 text-center mx-5 w-full">
-            Not Found Any Sub Task
-          </span>
-        )}
+          ) : (
+            <span className="text-gray-500 text-center mx-5 w-full">
+              Not Found Any Sub Task
+            </span>
+          )}
+        </div>
 
         <button
           onClick={() => setOpen(true)}
@@ -132,7 +135,7 @@ const TaskCard = ({ item }) => {
         </button>
       </div>
 
-      <SubTaskModel open={open} setOpen={setOpen} />
+      <SubTaskModel open={open} setOpen={setOpen} id={item?._id} />
     </div>
   );
 };

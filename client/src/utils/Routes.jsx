@@ -17,7 +17,7 @@ const Routes = () => {
       children: [
         {
           index: true,
-          element: <Dashboard />,
+          element: <Login />,
         },
         {
           path: "/dashboard",

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiTwotoneFolderOpen } from "react-icons/ai";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
@@ -7,41 +7,71 @@ import { HiDuplicate, HiOutlineDotsHorizontal } from "react-icons/hi";
 import { IoAdd } from "react-icons/io5";
 import AddTaskModel from "./AddTaskModel";
 import SubTaskModel from "./SubTaskModel";
-import { ConfirmatioDialog } from "./Dialogs";
+import { toast } from "sonner";
+import {
+  useDuplicateTaskMutation,
+  useTrashedTaskMutation,
+} from "../redux/apis/taskApiSlice";
 
-const TaskDialog = ({ item }) => {
+const TaskDialog = ({ item, refetch }) => {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
-  const duplicateHandler = () => {};
-  const deleteClick = () => {};
-  const deleteHandler = () => {};
-  const items = [
+  const [trashedTask] = useTrashedTaskMutation();
+  const [duplicateTask] = useDuplicateTaskMutation();
+
+  // Function to handle duplicate task (implementation not provided)
+  const duplicateHandler = async () => {
+    try {
+      const response = await duplicateTask(item?._id).unwrap();
+      toast.success(response?.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
+  };
+
+  // Function to handle delete task (implementation not provided)
+  const deleteHandler = async () => {
+    try {
+      const response = await trashedTask({
+        id: item?._id,
+        isTrashed: "trash",
+      }).unwrap();
+      toast.success(response.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
+  };
+
+  // Array of menu items for the task options
+  const menuItems = [
     {
-      label: "open task ",
-      icon: (
-        <AiTwotoneFolderOpen className="w-5 h-5 mr-2 " aria-hidden={true} />
-      ),
-      onClick: () => navigate(`/task-details/${item.id}`),
+      label: "Open Task",
+      icon: <AiTwotoneFolderOpen className="w-5 h-5 mr-2" aria-hidden={true} />,
+      onClick: () => navigate(`/task-details/${item._id}`),
     },
     {
-      label: "edit task ",
-      icon: <MdOutlineEdit className="w-5 h-5 mr-2 " aria-hidden={true} />,
+      label: "Edit Task",
+      icon: <MdOutlineEdit className="w-5 h-5 mr-2" aria-hidden={true} />,
       onClick: () => setOpenEdit(true),
     },
     {
-      label: "add sub task ",
-      icon: <IoAdd className="w-5 h-5 mr-2 " aria-hidden={true} />,
+      label: "Add Sub Task",
+      icon: <IoAdd className="w-5 h-5 mr-2" aria-hidden={true} />,
       onClick: () => setOpen(true),
     },
-
     {
-      label: "duplicate task ",
-      icon: <HiDuplicate className="w-5 h-5 mr-2 " aria-hidden={true} />,
+      label: "Duplicate Task",
+      icon: <HiDuplicate className="w-5 h-5 mr-2" aria-hidden={true} />,
       onClick: () => duplicateHandler(),
     },
   ];
+
+  // Render the menu
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">
@@ -61,34 +91,34 @@ const TaskDialog = ({ item }) => {
         >
           <Menu.Items className="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-xl ring-1 ring-black/5 focus:outline-none">
             <div className="px-1 py-1 ">
-              {items.map((item, index) => {
-                return (
-                  <Menu.Item key={index}>
-                    {({ active }) => (
-                      <button
-                        onClick={item.onClick}
-                        className={`${
-                          active ? "bg-blue-700 text-white" : "text-gray-900"
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        {item?.icon}
-                        {item?.label}
-                      </button>
-                    )}
-                  </Menu.Item>
-                );
-              })}
+              {/* Render menu items */}
+              {menuItems.map((menuItem, index) => (
+                <Menu.Item key={index}>
+                  {({ active }) => (
+                    <button
+                      onClick={menuItem.onClick}
+                      className={`${
+                        active ? "bg-blue-700 text-white" : "text-gray-900"
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      {menuItem.icon}
+                      {menuItem.label}
+                    </button>
+                  )}
+                </Menu.Item>
+              ))}
 
+              {/* Delete task menu item */}
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => deleteClick()}
+                    onClick={deleteHandler}
                     className={`${
                       active ? "bg-red-500 text-white" : "text-red-500"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   >
-                    <MdDelete className="w-5 h-5 mr-2 " aria-hidden={true} />
-                    <span>delete</span>
+                    <MdDelete className="w-5 h-5 mr-2" aria-hidden={true} />
+                    <span>Delete</span>
                   </button>
                 )}
               </Menu.Item>
@@ -96,21 +126,10 @@ const TaskDialog = ({ item }) => {
           </Menu.Items>
         </Transition>
       </Menu>
-
-      <AddTaskModel
-        open={openEdit}
-        setOpen={setOpenEdit}
-        key={new Date().getTime()}
-        task={item}
-      />
-
-      <SubTaskModel open={open} setOpen={setOpen} />
-
-      <ConfirmatioDialog
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={deleteHandler}
-      />
+      {/* Render the edit task modal */}
+      <AddTaskModel open={openEdit} setOpen={setOpenEdit} task={item} />
+      {/* Render the sub-task model */}
+      <SubTaskModel open={open} setOpen={setOpen} id={item?._id} />
     </>
   );
 };

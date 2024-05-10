@@ -6,11 +6,15 @@ import morgan from "morgan";
 import { dbConnection } from "./utils/db.js";
 import { errorHandler, routeNotFound } from "./middlewares/errorMiddleware.js";
 import routes from "./routes/route.js";
+import mongoose from "mongoose";
 
 dotenv.config();
 dbConnection();
 const PORT = process.env.PORT || 5000;
 const app = express();
+
+// Set global Mongoose options
+mongoose.set("strictPopulate", false);
 
 app.use(
   cors({

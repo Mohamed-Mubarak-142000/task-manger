@@ -242,11 +242,11 @@ export const getOneTask = async (req, res) => {
 
 export const createSubTask = async (req, res) => {
   try {
-    const { title, tag, date } = req.body;
+    const { subtitle, tag, date } = req.body;
     const { id } = req.params;
 
     const newSubTask = {
-      title,
+      subtitle,
       tag,
       date,
     };
@@ -260,7 +260,10 @@ export const createSubTask = async (req, res) => {
     res.status(200).json({
       status: true,
       message: "Subtask Added Successfully",
+      task,
     });
+
+    console.log("sub task:", task);
   } catch (error) {
     console.log(error);
     return res.status(400).json({
@@ -269,6 +272,7 @@ export const createSubTask = async (req, res) => {
     });
   }
 };
+
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -278,25 +282,22 @@ export const updateTask = async (req, res) => {
 
     task.title = title;
     task.date = date;
-    task.stage = stage.toLowerCase();
     task.priority = priority.toLowerCase();
     task.assets = assets;
+    task.stage = stage.toLowerCase();
     task.team = team;
 
     await task.save();
 
-    res.status(200).json({
-      status: true,
-      message: "Task Updated Successfully",
-    });
+    res
+      .status(200)
+      .json({ status: true, message: "Task Updated successfully." });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({
-      status: false,
-      message: error.message,
-    });
+    return res.status(400).json({ status: false, message: error.message });
   }
 };
+
 export const trashTask = async (req, res) => {
   try {
     const { id } = req.params;

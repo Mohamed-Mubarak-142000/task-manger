@@ -7,36 +7,34 @@ import { TbListDetails } from "react-icons/tb";
 import { LuListFilter } from "react-icons/lu";
 import ActivitiesAndTimeLine from "../components/ActivitiesAndTimeLine";
 import OneTaskDetails from "../components/OneTaskDetails";
+import { useGetSingleTaskQuery } from "../redux/apis/taskApiSlice";
 
 const TaskDetails = () => {
-  const [taskDetails, setTaskDetails] = useState(null);
   const [selected, setSelected] = useState(0);
   const { id } = useParams();
+  const { data } = useGetSingleTaskQuery(id);
 
-  useEffect(() => {
-    const taskData = tasks.find((task) => task.id === id);
-    setTaskDetails(taskData);
-  }, [id]);
+  console.log("first:::::", data?.task);
 
   const tabs = [
     { id: "1", title: "task details", icon: <TbListDetails /> },
     { id: "2", title: "activities / timeline", icon: <LuListFilter /> },
   ];
-  console.log("898998989898 ", taskDetails);
+  console.log("898998989898 ", data);
 
   return (
     <>
       <div>
-        <Title title={taskDetails?.title} />
+        <Title title={data?.title} />
       </div>
       <Tabs tabs={tabs} setSelected={setSelected}>
         {selected === 0 ? (
           <div>
-            <OneTaskDetails taskDetails={taskDetails} />
+            <OneTaskDetails taskDetails={data?.task} />
           </div>
         ) : (
           <div>
-            <ActivitiesAndTimeLine taskDetails={taskDetails} />
+            <ActivitiesAndTimeLine taskDetails={data?.task} />
           </div>
         )}
       </Tabs>

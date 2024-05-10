@@ -4,14 +4,29 @@ import ModelWrapper from "./ModelWrapper";
 import { Dialog } from "@headlessui/react";
 import Button from "./Button";
 import Texbox from "./Texbox";
+import { useCreateSubTaskMutation } from "../redux/apis/taskApiSlice";
+import { toast } from "sonner";
 
-const SubTaskModel = ({ open, setOpen }) => {
+const SubTaskModel = ({ open, setOpen, id }) => {
   const {
     formState: { errors },
     register,
     handleSubmit,
   } = useForm();
-  const submitHandler = () => {};
+
+  const [createSubTask] = useCreateSubTaskMutation();
+
+  //CREATE SUB TASK
+  const submitHandler = async (data) => {
+    try {
+      const response = await createSubTask({ data, id }).unwrap();
+      toast.success(response?.message);
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
+  };
 
   return (
     <ModelWrapper open={open} setOpen={setOpen} className="my-2">
@@ -74,7 +89,7 @@ const SubTaskModel = ({ open, setOpen }) => {
             }
             icon={""}
             onClick={() => setOpen(false)}
-            type={"submit"}
+            type={"button"}
             label={"cancel"}
           />
         </div>

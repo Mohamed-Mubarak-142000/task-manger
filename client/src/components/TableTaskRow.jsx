@@ -10,11 +10,14 @@ import {
 import { getFormatDate } from "../utils/getTimeDetails";
 import { TfiAlarmClock } from "react-icons/tfi";
 import { CgAttachment } from "react-icons/cg";
-import { ConfirmatioDialog } from "./Dialogs";
+import { useTrashedTaskMutation } from "../redux/apis/taskApiSlice";
+import { toast } from "sonner";
+import AddTaskModel from "./AddTaskModel";
 
-const TableTaskRow = ({ task }) => {
-  const [selected, setSelected] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+const TableTaskRow = ({ task, refetch }) => {
+  const [trashedTask] = useTrashedTaskMutation();
+  const [openEdit, setOpenEdit] = useState(false);
+
   const TaskType = {
     completed: "bg-blue-600",
     "in progress": "bg-green-500",
@@ -27,10 +30,21 @@ const TableTaskRow = ({ task }) => {
     low: <MdKeyboardArrowDown />,
   };
 
-  const deleteClick = (id) => {
-    setSelected(id);
-    setOpenDialog(true);
+  // Function to handle delete task (implementation not provided)
+  const deleteHandler = async () => {
+    try {
+      const response = await trashedTask({
+        id: task?._id,
+        isTrashed: "trash",
+      }).unwrap();
+      toast.success(response.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
   };
+
   return (
     <>
       <tr className="border-b border-gray-300 text-gray-700 hover:bg-gray-100">
@@ -97,11 +111,14 @@ const TableTaskRow = ({ task }) => {
 
         <td>
           <div className="flex items-center gap-5">
-            <button className="capitalize text-blue-600 text-sm hover:bg-blue-500 hover:text-white transition-all duration-150 px-2 rounded ">
+            <button
+              onClick={() => setOpenEdit(true)}
+              className="capitalize text-blue-600 text-sm hover:bg-blue-500 hover:text-white transition-all duration-150 px-2 rounded "
+            >
               edit
             </button>
             <button
-              onClick={() => deleteClick(task.id)}
+              onClick={deleteHandler}
               className="capitalize text-red-600 text-sm hover:bg-red-500 hover:text-white transition-all duration-150 px-2 rounded"
             >
               delete
@@ -110,10 +127,12 @@ const TableTaskRow = ({ task }) => {
         </td>
       </tr>
 
-      <ConfirmatioDialog
-        open={openDialog}
-        setOpen={setOpenDialog}
-        onClick={() => deleteClick(task.id)}
+      {/* Render the edit task modal */}
+      <AddTaskModel
+        open={openEdit}
+        refetch={refetch}
+        setOpen={setOpenEdit}
+        task={task}
       />
     </>
   );

@@ -8,7 +8,6 @@ import Button from "../components/Button";
 import Tabs from "../components/Tabs";
 import TaskTitle from "../components/TaskTitle";
 import BoardTask from "../components/BoardTask";
-import { tasks } from "../assets/data";
 import ListView from "../components/ListView";
 import AddTaskModel from "../components/AddTaskModel";
 import { useGetAllTasksQuery } from "../redux/apis/taskApiSlice";
@@ -16,8 +15,6 @@ import { useGetAllTasksQuery } from "../redux/apis/taskApiSlice";
 const Tasks = () => {
   const params = useParams();
   const status = params?.status?.replace("-", " ") || "";
-
-  console.log("111", status);
 
   const tabs = [
     { title: "board view ", icon: <MdGridView /> },
@@ -32,7 +29,7 @@ const Tasks = () => {
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(0);
-  const { isLoading, data } = useGetAllTasksQuery({
+  const { isLoading, data, refetch } = useGetAllTasksQuery({
     strQuery: status,
     isTrashed: "",
     search: "",
@@ -53,7 +50,7 @@ const Tasks = () => {
             label={"create task"}
             type={"button"}
             className={
-              "bg-blue-700 text-white flex items-center justify-center capitalize rounded p-1 hover:bg-blue-800 transition-all duration-150 "
+              "bg-blue-700 text-white flex items-center justify-center capitalize rounded px-3 py-2 hover:bg-blue-800 transition-all duration-150 "
             }
           />
         )}
@@ -74,17 +71,17 @@ const Tasks = () => {
 
           {selected === 0 ? (
             <div>
-              <BoardTask tasks={data?.tasks} />
+              <BoardTask tasks={data?.tasks} refetch={refetch} />
             </div>
           ) : (
             <div>
-              <ListView tasks={data?.tasks} />
+              <ListView tasks={data?.tasks} refetch={refetch} />
             </div>
           )}
         </Tabs>
       </section>
 
-      <AddTaskModel open={open} setOpen={setOpen} task={data?.task} />
+      <AddTaskModel open={open} setOpen={setOpen} refetch={refetch} />
     </div>
   );
 };

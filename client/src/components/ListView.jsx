@@ -1,7 +1,7 @@
 import React from "react";
 import TableTaskRow from "./TableTaskRow";
 
-const ListView = ({ tasks }) => {
+const ListView = ({ tasks, refetch }) => {
   const HeaderTable = () => {
     return (
       <thead className="border-b border-gray-300 bg-gray-200">
@@ -22,7 +22,7 @@ const ListView = ({ tasks }) => {
         <HeaderTable />
         <tbody>
           {tasks?.map((task, id) => {
-            return <TableTaskRow key={id} task={task} />;
+            return <TableTaskRow key={id} task={task} refetch={refetch} />;
           })}
         </tbody>
       </table>
