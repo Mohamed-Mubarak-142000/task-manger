@@ -12,9 +12,9 @@ import { useGetSingleTaskQuery } from "../redux/apis/taskApiSlice";
 const TaskDetails = () => {
   const [selected, setSelected] = useState(0);
   const { id } = useParams();
-  const { data } = useGetSingleTaskQuery(id);
+  const { data, refetch } = useGetSingleTaskQuery(id);
 
-  console.log("first:::::", data?.task);
+  console.log("first:::::", data);
 
   const tabs = [
     { id: "1", title: "task details", icon: <TbListDetails /> },
@@ -34,7 +34,11 @@ const TaskDetails = () => {
           </div>
         ) : (
           <div>
-            <ActivitiesAndTimeLine taskDetails={data?.task} />
+            <ActivitiesAndTimeLine
+              taskDetails={data?.task?.activities}
+              id={id}
+              refetch={refetch}
+            />
           </div>
         )}
       </Tabs>

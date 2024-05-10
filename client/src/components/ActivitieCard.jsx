@@ -48,11 +48,13 @@ const ActivitieCard = ({ activeite }) => {
 
         <div className="flex flex-col">
           <h2 className=" capitalize">{activeite?.by?.name}</h2>
-          <div className="flex items-center gap-3 capitalize text-sm text-gray-800 ">
-            <span>{activeite?.type}</span>
+          <div className="flex flex-col capitalize text-xs text-gray-500 ">
+            <span className="text-sm">{activeite?.type}</span>
             <span>{moment(activeite?.date).fromNow()}</span>
           </div>
-          <span className="text-gray-800 text-xs">{activeite.activity}</span>
+          <span className="text-gray-800 text-md capitalize mt-3">
+            {activeite.activityText}
+          </span>
         </div>
       </div>
 

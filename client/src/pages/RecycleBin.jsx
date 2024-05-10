@@ -5,6 +5,10 @@ import Title from "../components/Title";
 import { tasks } from "../assets/data";
 import TrashedTask from "../components/TrashedTask";
 import { ConfirmatioDialog } from "../components/Dialogs";
+import {
+  useDeleteRestoreTaskMutation,
+  useGetAllTasksQuery,
+} from "../redux/apis/taskApiSlice";
 
 const RecycleBin = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -12,6 +16,14 @@ const RecycleBin = () => {
   const [msg, setMsg] = useState(null);
   const [type, setType] = useState("deleted");
   const [selected, setSelected] = useState("");
+
+  const { data } = useGetAllTasksQuery({
+    strQuery: "",
+    isTrashed: "true",
+    search: "",
+  });
+
+  const [deleteRestoreTask] = useDeleteRestoreTaskMutation();
 
   const restoreAllClick = () => {
     setType("deleteAll");

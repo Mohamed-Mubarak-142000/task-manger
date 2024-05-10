@@ -18,22 +18,25 @@ const TaskCard = ({ item, refetch }) => {
   const { user } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
 
-  const TaskTypeProirty = {
-    high: "text-blue-600",
-    medium: "text-green-500",
-    "in progress": "text-yellow-500",
+  const TaskType = {
+    completed: "bg-blue-600",
+    "in progress": "bg-green-500",
+    todo: "bg-yellow-500",
   };
 
-  const TaskTypeProirty2 = {
-    high: "bg-blue-600",
-    medium: "bg-green-500",
-    "in progress": "bg-yellow-500",
+  //////////////////////////
+  const TaskTypeProirty = {
+    high: "text-blue-500",
+    medium: "text-green-500",
+    normal: "text-yellow-500",
+    low: "text-red-500",
   };
 
   const iconsTasks = {
     high: <MdKeyboardDoubleArrowUp />,
     medium: <MdKeyboardArrowUp />,
     "in progress": <MdKeyboardArrowDown />,
+    low: <MdKeyboardArrowUp />,
   };
 
   return (
@@ -56,9 +59,7 @@ const TaskCard = ({ item, refetch }) => {
       </div>
       {/***title task */}
       <div className="flex items-center gap-1 capitalize mt-2">
-        <div
-          className={`${TaskTypeProirty2[item.priority]} w-4 h-4 rounded-full`}
-        />
+        <div className={`${TaskType[item.stage]} w-4 h-4 rounded-full`} />
         <span className="text-sm line-clamp-1">{item?.title}</span>
       </div>
       {/***time */}
@@ -102,7 +103,7 @@ const TaskCard = ({ item, refetch }) => {
 
         <div className="h-[70px] flex">
           {item?.subTasks?.length ? (
-            <div className=" border w-full">
+            <div className=" w-full">
               <span className="text-sm p-2 font-bold text-gray-900 line-clamp-1">
                 {item?.subTasks[0]?.subtitle}
               </span>

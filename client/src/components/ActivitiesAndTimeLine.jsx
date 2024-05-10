@@ -3,8 +3,10 @@ import Title from "./Title";
 import ActivitieCard from "./ActivitieCard";
 import Loading from "./Loading";
 import Button from "./Button";
+import { useCreateTaskActivityMutation } from "../redux/apis/taskApiSlice";
+import { toast } from "sonner";
 
-const ActivitiesAndTimeLine = ({ taskDetails }) => {
+const ActivitiesAndTimeLine = ({ taskDetails, id, refetch }) => {
   const act_type = [
     "Started",
     "completed",
@@ -14,18 +16,40 @@ const ActivitiesAndTimeLine = ({ taskDetails }) => {
     "assigned",
   ];
 
+  const [createTaskActivity, { isLoading: loading }] =
+    useCreateTaskActivityMutation();
+
+  console.log("first:::::::::::::::::::::::::::::::", taskDetails);
+
   const [selected, setSelected] = useState(act_type[0]);
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    try {
+      const activityPost = {
+        type: selected?.toLowerCase(),
+        activityText: text,
+      };
+      const response = await createTaskActivity({
+        data: activityPost,
+        id,
+      }).unwrap();
+
+      setText("");
+      toast.success(response?.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
+  };
   return (
-    <section className="w-full bg-white rounded-lg shadow-lg py-5 px-3 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
+    <section className="w-full bg-white rounded-lg shadow-lg py-5 px-3 min-h-[600px] grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
       <section>
         <Title title={"activities"} />
 
         <div className=" flex flex-col gap-3">
-          {taskDetails.activities.map((activeite, index) => {
+          {taskDetails?.map((activeite, index) => {
             return (
               <ActivitieCard
                 isConnected={index < activeite.length - 1}
@@ -79,8 +103,8 @@ const ActivitiesAndTimeLine = ({ taskDetails }) => {
               }
               icon={""}
               label={"add activity"}
-              type={"button"}
-              onClick={() => handleSubmit}
+              type={"submit"}
+              onClick={() => handleSubmit()}
             />
           )}
         </section>

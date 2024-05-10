@@ -86,13 +86,13 @@ export const postTaskActivity = async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.user;
-    const { type, activity } = req.body;
+    const { type, activityText } = req.body;
 
     const task = await Task.findById(id);
 
     const data = {
       type,
-      activity,
+      activityText,
       by: userId,
     };
 

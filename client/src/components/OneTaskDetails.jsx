@@ -8,58 +8,36 @@ import {
 import { getFormatDate } from "../utils/getTimeDetails";
 import { getInitial } from "../utils/getInitialUsername";
 const OneTaskDetails = ({ taskDetails }) => {
-  // const STYLEDCOLOR = {
-  //   stageStyle: {
-  //     completed: "text-green-700",
-  //     todo: "text-blue-700",
-  //     "in progress": "text-red-700",
-  //   },
-  //   priorityStyle: {
-  //     high: "bg-green-300",
-  //     medium: "bg-blue-300",
-  //     "in progress": "bg-red-300",
-  //   },
-  //   stageIcons: {
-  //     completed: "bg-blue-600",
-  //     "in progress": "bg-green-500",
-  //     todo: "bg-yellow-500",
-  //   },
-  // };
-
+  //////////////////////////////////////////////
   const TaskType = {
     completed: "bg-blue-600",
     "in progress": "bg-green-500",
     todo: "bg-yellow-500",
   };
 
-  const TaskTypeProirty = {
-    high: "text-blue-600",
-    medium: "text-green-500",
-    "in progress": "text-yellow-500",
-  };
-
   const bgTaskTypeProirty = {
-    high: "bg-blue-300",
-    medium: "bg-green-300",
-    "in progress": "bg-yellow-300",
+    high: "bg-blue-200",
+    medium: "bg-green-200",
+    normal: "bg-yellow-200",
+    low: "bg-red-200",
   };
 
   const iconsTasks = {
     high: <MdKeyboardDoubleArrowUp />,
     medium: <MdKeyboardArrowUp />,
+    low: <MdKeyboardArrowUp />,
     "in progress": <MdKeyboardArrowDown />,
   };
 
   return (
-    <section className="bg-white rounded-lg shadow-lg p-2 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-2">
+    <section className="bg-white rounded-lg shadow-lg p-2 grid grid-cols-1 min-h-[600px] gap-3 md:grid-cols-2 md:gap-2">
       <section className="flex flex-col gap-2">
         <div className="flex items-center gap-5 my-2">
           <div
             className={`w-[160px] text-center capitalize rounded-xl py-1 flex items-center justify-center gap-1
-        ${bgTaskTypeProirty[taskDetails?.priority]} ${
-              TaskType[taskDetails?.stage]
-            } `}
+        ${bgTaskTypeProirty[taskDetails?.priority]}  `}
           >
+            <span> {iconsTasks[taskDetails?.priority]}</span>
             <span>{taskDetails?.priority}</span>
             <span className="capitalize">priority</span>
           </div>
@@ -151,7 +129,7 @@ const OneTaskDetails = ({ taskDetails }) => {
                         </span>
                       </div>
 
-                      <span className="text-sm">{task?.title}</span>
+                      <span className="text-sm">{task?.subtitle}</span>
                     </div>
                   </div>
 
@@ -171,6 +149,12 @@ const OneTaskDetails = ({ taskDetails }) => {
         <h3 className="capitalize text-gray-600 m-2 text-[20px] ">
           task assets
         </h3>
+
+        {!taskDetails?.assets?.length && (
+          <h1 className="text-gray-400 text-lg text-center my-3">
+            Not Found Any Assets
+          </h1>
+        )}
 
         <div className="flex items-center gap-1">
           {taskDetails?.assets?.map((asset, index) => {

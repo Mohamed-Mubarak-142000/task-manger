@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { getFormatDate } from "../utils/getTimeDetails";
 import { MdDelete, MdRestore } from "react-icons/md";
 import Button from "./Button";
-import { ConfirmatioDialog } from "./Dialogs";
 
 const TrashedTask = ({ task, deleteClick, restoreClick }) => {
   const TaskType = {
