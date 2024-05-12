@@ -18,7 +18,7 @@ mongoose.set("strictPopulate", false);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: ["https://task-manger-mern.vercel.app/"],
     methods: ["POST", "DELETE", "PUT", "GET"],
     credentials: true,
   })
