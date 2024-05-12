@@ -14,9 +14,11 @@ const TableRowUser = ({ user }) => {
       </td>
 
       <td>
-        <div className="text-block bg-blue-300 w-16 py-1 rounded-2xl flex items-center justify-center capitalize hover:bg-blue-500 hover:text-white transition-all duration-150 ">
-          {user?.isActive ? "active" : "inActive"}
-        </div>
+        {user && (
+          <div className="text-block bg-blue-300 w-16 py-1 rounded-2xl flex items-center justify-center capitalize hover:bg-blue-500 hover:text-white transition-all duration-150 ">
+            active
+          </div>
+        )}
       </td>
 
       <td>

@@ -71,11 +71,27 @@ const Tasks = () => {
 
           {selected === 0 ? (
             <div>
-              <BoardTask tasks={data?.tasks} refetch={refetch} />
+              <BoardTask tasks={data?.tasks} refetch={refetch} />{" "}
+              {!data?.tasks.length && (
+                <h1
+                  colSpan="5"
+                  className=" py-3 text-gray-400 text-lg capitalize text-center flex items-center justify-center my-3"
+                >
+                  not found any tasks
+                </h1>
+              )}
             </div>
           ) : (
             <div>
               <ListView tasks={data?.tasks} refetch={refetch} />
+              {!data?.tasks.length && (
+                <h1
+                  colSpan="5"
+                  className=" py-3 text-gray-400 text-lg capitalize text-center flex items-center justify-center my-3"
+                >
+                  not found any tasks
+                </h1>
+              )}
             </div>
           )}
         </Tabs>

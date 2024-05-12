@@ -22,7 +22,7 @@ export const createTask = async (req, res) => {
 
       const activity = {
         type: "assigned",
-        activity: text,
+        activityText: text,
         by: userId,
       };
 

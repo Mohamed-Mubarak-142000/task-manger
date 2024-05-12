@@ -9,6 +9,7 @@ import {
   useDeleteRestoreTaskMutation,
   useGetAllTasksQuery,
 } from "../redux/apis/taskApiSlice";
+import { toast } from "sonner";
 
 const RecycleBin = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -17,7 +18,7 @@ const RecycleBin = () => {
   const [type, setType] = useState("deleted");
   const [selected, setSelected] = useState("");
 
-  const { data } = useGetAllTasksQuery({
+  const { data, refetch } = useGetAllTasksQuery({
     strQuery: "",
     isTrashed: "true",
     search: "",
@@ -25,14 +26,60 @@ const RecycleBin = () => {
 
   const [deleteRestoreTask] = useDeleteRestoreTaskMutation();
 
+  const deleteAndReasoreTask = async () => {
+    try {
+      let result;
+
+      switch (type) {
+        case "delete":
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: "delete",
+          }).unwrap();
+          break;
+
+        case "deleteAll":
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: "deleteAll",
+          }).unwrap();
+          break;
+
+        case "restore":
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: "restore",
+          }).unwrap();
+          break;
+
+        case "restoreAll":
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: "restoreAll",
+          }).unwrap();
+          break;
+
+        default:
+          break;
+      }
+
+      toast.success(result?.message);
+      refetch();
+      setOpenDialog(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error?.message);
+    }
+  };
+
   const restoreAllClick = () => {
-    setType("deleteAll");
+    setType("restoreAll");
     setMsg("do you went to permently restore all items");
     setOpenDialog(true);
   };
 
   const deleteAllClick = () => {
-    setType("restoreAll");
+    setType("deleteAll");
     setMsg("do you went to permently delete all items");
     setOpenDialog(true);
   };
@@ -92,8 +139,19 @@ const RecycleBin = () => {
       <div className="w-full my-2">
         <table className="w-full">
           <HeaderTable />
+
           <tbody>
-            {tasks.map((task, index) => {
+            <tr>
+              {!data?.tasks?.length && (
+                <td
+                  colSpan="5"
+                  className=" py-3 text-gray-400 text-lg capitalize text-center my-3"
+                >
+                  not found any tasks
+                </td>
+              )}
+            </tr>
+            {data?.tasks?.map((task, index) => {
               return (
                 <TrashedTask
                   task={task}
@@ -101,8 +159,8 @@ const RecycleBin = () => {
                   setMsg={setMsg}
                   setOpenDialog={setOpenDialog}
                   setType={setType}
-                  deleteClick={deleteClick}
-                  restoreClick={restoreClick}
+                  deleteClick={() => deleteClick(task._id)}
+                  restoreClick={() => restoreClick(task._id)}
                 />
               );
             })}
@@ -113,7 +171,7 @@ const RecycleBin = () => {
       <ConfirmatioDialog
         msg={msg}
         open={openDialog}
-        onClick={() => deleteAllClick()}
+        onClick={deleteAndReasoreTask}
         setMsg={setMsg}
         setType={setType}
         type={type}

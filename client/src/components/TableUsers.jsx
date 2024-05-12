@@ -1,6 +1,5 @@
 import React from "react";
 import TableRowUser from "./TableRowUser";
-import { summary } from "../assets/data";
 
 const TableUsers = ({ users }) => {
   const HeaderTable = () => {

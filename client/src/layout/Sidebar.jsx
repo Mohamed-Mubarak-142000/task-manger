@@ -72,7 +72,7 @@ const Sidebar = () => {
         <span className="bg-blue-600 text-white text-[30px] rounded-full">
           <MdAddTask />
         </span>
-        <span className="capitalize font-bold text-[25px]">taskMe</span>
+        <span className="capitalize font-bold text-[25px]">task dashboard</span>
       </h1>
 
       <div className="h-[100%] flex flex-col gap-5 py-5">
