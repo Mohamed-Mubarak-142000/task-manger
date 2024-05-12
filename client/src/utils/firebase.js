@@ -5,7 +5,9 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDef_m4YpyX9du11653uzP0MuwXpYnmHFI",
+  apiKey:
+    import.meta.env.VITE_APP_FIREBASE_API_KEY ||
+    "AIzaSyDef_m4YpyX9du11653uzP0MuwXpYnmHFI",
   authDomain: "taskmanger-c7fa1.firebaseapp.com",
   projectId: "taskmanger-c7fa1",
   storageBucket: "taskmanger-c7fa1.appspot.com",
